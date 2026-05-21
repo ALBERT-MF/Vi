@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<!-- Esta es la versión Pas_03 -->
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#4a1020">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Vins">
+  <link rel="manifest" href="manifest.json">
+  <title>Celler de Vins</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #1a0a0f;
+      color: #f0e6ea;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #4a1020;
+      padding: 20px 16px 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      font-size: 0.85rem;
+      color: #c9909f;
+      margin-top: 4px;
+    }
+
+    main {
+      flex: 1;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .titol-seccio {
+      font-size: 0.85rem;
+      color: #9a7080;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .grid-tipus {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .card-tipus {
+      border-radius: 16px;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: none;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-tipus:active {
+      transform: scale(0.96);
+    }
+
+    .card-tipus .emoji {
+      font-size: 2.8rem;
+    }
+
+    .card-tipus .nom {
+      font-size: 1rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+
+    .card-tipus .comptador {
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+
+    /* Colors per cada tipus */
+    .negre {
+      background: linear-gradient(135deg, #3d0e1a, #6b1a2e);
+      box-shadow: 0 4px 16px rgba(107, 26, 46, 0.4);
+    }
+
+    .blanc {
+      background: linear-gradient(135deg, #4a3a00, #8a6e00);
+      box-shadow: 0 4px 16px rgba(138, 110, 0, 0.4);
+    }
+
+    .rosat {
+      background: linear-gradient(135deg, #5a1a3a, #c0406a);
+      box-shadow: 0 4px 16px rgba(192, 64, 106, 0.4);
+    }
+
+    .cava {
+      background: linear-gradient(135deg, #2a3a1a, #4a6a2a);
+      box-shadow: 0 4px 16px rgba(74, 106, 42, 0.4);
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px;
+      font-size: 0.7rem;
+      color: #5a3040;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🍷 Celler de Vins</h1>
+    <p>El meu registre personal</p>
+  </header>
+
+  <main>
+    <p class="titol-seccio">Selecciona el tipus de vi</p>
+
+    <div class="grid-tipus">
+
+      <button class="card-tipus negre" onclick="seleccionar('negre')">
+        <span class="emoji">🍷</span>
+        <span class="nom">Vi Negre</span>
+        <span class="comptador" id="comp-negre">0 vins</span>
+      </button>
+
+      <button class="card-tipus blanc" onclick="seleccionar('blanc')">
+        <span class="emoji">🥂</span>
+        <span class="nom">Vi Blanc</span>
+        <span class="comptador" id="comp-blanc">0 vins</span>
+      </button>
+
+      <button class="card-tipus rosat" onclick="seleccionar('rosat')">
+        <span class="emoji">🌸</span>
+        <span class="nom">Vi Rosat</span>
+        <span class="comptador" id="comp-rosat">0 vins</span>
+      </button>
+
+      <button class="card-tipus cava" onclick="seleccionar('cava')">
+        <span class="emoji">🍾</span>
+        <span class="nom">Cava</span>
+        <span class="comptador" id="comp-cava">0 vins</span>
+      </button>
+
+    </div>
+  </main>
+
+  <footer>Celler de Vins · Ús personal</footer>
+
+  <script>
+    // Carreguem les dades del localStorage i actualitzem els comptadors
+    function actualitzarComptadors() {
+      const tipus = ['negre', 'blanc', 'rosat', 'cava'];
+      tipus.forEach(t => {
+        const vins = JSON.parse(localStorage.getItem('vins_' + t) || '[]');
+        const el = document.getElementById('comp-' + t);
+        el.textContent = vins.length === 1 ? '1 vi' : vins.length + ' vins';
+      });
+    }
+
+    function seleccionar(tipus) {
+      // De moment mostrem un avís — al Pas_03 aquí anirà la pantalla de cerca
+      alert('Has seleccionat: ' + tipus.toUpperCase() + '\n\n(La pantalla de cerca s\'afegirà al Pas_03)');
+    }
+
+    // Registrem el Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .catch(err => console.error('SW error:', err));
+      });
+    }
+
+    // Iniciem
+    actualitzarComptadors();
+  </script>
+
+</body>
+</html>
