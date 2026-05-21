@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Pas_03: Llista i formulari de vins -->
+<!-- Pas_04: Edició de vins -->
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
@@ -124,9 +124,7 @@
     .cava  { background: linear-gradient(135deg, #2a3a1a, #4a6a2a); box-shadow: 0 4px 16px rgba(74,106,42,0.4); }
 
     /* ===== VISTA LLISTA ===== */
-    #view-llista {
-      flex-direction: column;
-    }
+    #view-llista { flex-direction: column; }
 
     #view-llista .llista-header {
       background: #4a1020;
@@ -182,11 +180,9 @@
     .vi-card:active { transform: scale(0.98); }
 
     .vi-card .vi-emoji { font-size: 2rem; flex-shrink: 0; }
-
     .vi-card .vi-info { flex: 1; min-width: 0; }
     .vi-card .vi-nom { font-weight: 700; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .vi-card .vi-sub { font-size: 0.8rem; color: #9a7080; margin-top: 2px; }
-
     .vi-card .vi-punts { font-size: 0.9rem; flex-shrink: 0; }
 
     .buit-missatge {
@@ -199,9 +195,7 @@
     .buit-missatge .buit-emoji { font-size: 3rem; display: block; margin-bottom: 10px; }
 
     /* ===== VISTA FORMULARI ===== */
-    #view-form {
-      flex-direction: column;
-    }
+    #view-form { flex-direction: column; }
 
     #view-form .form-header {
       background: #4a1020;
@@ -253,9 +247,7 @@
     }
 
     .camp input:focus,
-    .camp textarea:focus {
-      border-color: #c0406a;
-    }
+    .camp textarea:focus { border-color: #c0406a; }
 
     .camp textarea {
       resize: none;
@@ -302,9 +294,7 @@
       z-index: 100;
       align-items: flex-end;
     }
-    .modal-overlay.obert {
-      display: flex;
-    }
+    .modal-overlay.obert { display: flex; }
 
     .modal-sheet {
       background: #2a1018;
@@ -361,7 +351,28 @@
       color: #d0b0bc;
     }
 
+    /* Botons del modal: Editar i Eliminar */
+    .modal-botons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-editar {
+      flex: 1;
+      background: #1a3050;
+      border: 1px solid #2a5080;
+      color: #80c0f0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 14px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .btn-editar:active { background: #2a4060; }
+
     .btn-eliminar {
+      flex: 1;
       background: #3d0e1a;
       border: 1px solid #7a1a2e;
       color: #f0a0b0;
@@ -370,8 +381,6 @@
       padding: 14px;
       border-radius: 12px;
       cursor: pointer;
-      width: 100%;
-      margin-top: 20px;
     }
     .btn-eliminar:active { background: #5a1020; }
 
@@ -425,7 +434,7 @@
     <div class="llista-header">
       <button class="btn-back" onclick="tornarInici()">←</button>
       <h2 id="llista-titol">Vi Negre</h2>
-      <button class="btn-afegir" onclick="obrirForm()">+</button>
+      <button class="btn-afegir" onclick="obrirForm(-1)">+</button>
     </div>
     <div id="llista-contingut"></div>
   </div>
@@ -475,7 +484,7 @@
         <label>Observacions / Notes de cata</label>
         <textarea id="f-obs" placeholder="Colors, aromes, sabor, maridatge..."></textarea>
       </div>
-      <button class="btn-guardar" onclick="guardarVi()">Guardar vi</button>
+      <button class="btn-guardar" id="btn-guardar" onclick="guardarVi()">Guardar vi</button>
     </div>
   </div>
 
@@ -487,22 +496,26 @@
       <div class="modal-puntuacio" id="m-puntuacio"></div>
       <div id="m-files"></div>
       <div class="modal-obs" id="m-obs" style="display:none"></div>
-      <button class="btn-eliminar" onclick="eliminarVi()">🗑 Eliminar aquest vi</button>
+      <div class="modal-botons">
+        <button class="btn-editar" onclick="obrirEdicio()">✏️ Editar</button>
+        <button class="btn-eliminar" onclick="eliminarVi()">🗑 Eliminar</button>
+      </div>
     </div>
   </div>
 
   <script>
     // ===== ESTAT GLOBAL =====
-    let tipusActual = 'negre';
-    let indexDetall = -1;
-    let puntuacioSeleccionada = 0;
+    var tipusActual = 'negre';
+    var indexDetall = -1;
+    var puntuacioSeleccionada = 0;
+    var modeEdicio = false; // false = nou vi, true = editar vi existent
 
-    const EMOJIS = { negre: '🍷', blanc: '🥂', rosat: '🌸', cava: '🍾' };
-    const NOMS   = { negre: 'Vi Negre', blanc: 'Vi Blanc', rosat: 'Vi Rosat', cava: 'Cava' };
+    var EMOJIS = { negre: '🍷', blanc: '🥂', rosat: '🌸', cava: '🍾' };
+    var NOMS   = { negre: 'Vi Negre', blanc: 'Vi Blanc', rosat: 'Vi Rosat', cava: 'Cava' };
 
     // ===== NAVEGACIÓ =====
     function mostrarVista(id) {
-      document.querySelectorAll('.vista').forEach(v => v.classList.remove('activa'));
+      document.querySelectorAll('.vista').forEach(function(v){ v.classList.remove('activa'); });
       document.getElementById(id).classList.add('activa');
       window.scrollTo(0, 0);
     }
@@ -519,13 +532,42 @@
       mostrarVista('view-home');
     }
 
-    function obrirForm() {
-      ['f-nom','f-raim','f-collita','f-graduacio','f-do','f-bodega','f-obs'].forEach(id => {
-        document.getElementById(id).value = '';
-      });
-      setPuntuacio(0);
-      document.getElementById('form-titol').textContent = 'Nou ' + NOMS[tipusActual].toLowerCase();
+    // index = -1 vol dir nou vi; index >= 0 vol dir editar el vi d'aquell índex
+    function obrirForm(index) {
+      modeEdicio = (index >= 0);
+      indexDetall = index;
+
+      if (modeEdicio) {
+        // Carreguem les dades del vi existent
+        var vins = getVins();
+        var v = vins[index];
+        document.getElementById('form-titol').textContent = '✏️ Editar vi';
+        document.getElementById('btn-guardar').textContent = 'Guardar canvis';
+        document.getElementById('f-nom').value       = v.nom        || '';
+        document.getElementById('f-raim').value      = v.raim       || '';
+        document.getElementById('f-collita').value   = v.collita    || '';
+        document.getElementById('f-graduacio').value = v.graduacio  || '';
+        document.getElementById('f-do').value        = v.do         || '';
+        document.getElementById('f-bodega').value    = v.bodega     || '';
+        document.getElementById('f-obs').value       = v.observacions || '';
+        setPuntuacio(v.puntuacio || 0);
+      } else {
+        // Formulari buit per a un vi nou
+        document.getElementById('form-titol').textContent = 'Nou ' + NOMS[tipusActual].toLowerCase();
+        document.getElementById('btn-guardar').textContent = 'Guardar vi';
+        ['f-nom','f-raim','f-collita','f-graduacio','f-do','f-bodega','f-obs'].forEach(function(id){
+          document.getElementById(id).value = '';
+        });
+        setPuntuacio(0);
+      }
+
+      // Tanquem el modal si estava obert
+      document.getElementById('modal-overlay').classList.remove('obert');
       mostrarVista('view-form');
+    }
+
+    function obrirEdicio() {
+      obrirForm(indexDetall);
     }
 
     function tornarLlista() {
@@ -533,7 +575,7 @@
       mostrarVista('view-llista');
     }
 
-    // ===== LLISTA =====
+    // ===== DADES =====
     function getVins() {
       return JSON.parse(localStorage.getItem('vins_' + tipusActual) || '[]');
     }
@@ -542,18 +584,19 @@
       localStorage.setItem('vins_' + tipusActual, JSON.stringify(arr));
     }
 
+    // ===== LLISTA =====
     function renderLlista() {
-      const vins = getVins();
-      const cont = document.getElementById('llista-contingut');
+      var vins = getVins();
+      var cont = document.getElementById('llista-contingut');
 
       if (vins.length === 0) {
         cont.innerHTML = '<div class="buit-missatge"><span class="buit-emoji">' + EMOJIS[tipusActual] + '</span>Encara no hi ha cap vi aquí.<br>Prem <strong>+</strong> per afegir-ne un!</div>';
         return;
       }
 
-      cont.innerHTML = vins.map((v, i) => {
-        const estreles = v.puntuacio ? '★'.repeat(v.puntuacio) : '—';
-        const sub = [v.bodega, v.do, v.collita ? 'Anyada ' + v.collita : ''].filter(Boolean).join(' · ');
+      cont.innerHTML = vins.map(function(v, i) {
+        var estreles = v.puntuacio ? '★'.repeat(v.puntuacio) : '—';
+        var sub = [v.bodega, v.do, v.collita ? 'Anyada ' + v.collita : ''].filter(Boolean).join(' · ');
         return '<div class="vi-card" onclick="obrirDetall(' + i + ')">'
           + '<span class="vi-emoji">' + EMOJIS[tipusActual] + '</span>'
           + '<div class="vi-info">'
@@ -567,8 +610,8 @@
 
     // ===== DETALL / MODAL =====
     function obrirDetall(index) {
-      const vins = getVins();
-      const v = vins[index];
+      var vins = getVins();
+      var v = vins[index];
       indexDetall = index;
 
       document.getElementById('m-nom').textContent = v.nom;
@@ -576,13 +619,13 @@
         ? '★'.repeat(v.puntuacio) + ' (' + v.puntuacio + '/5)'
         : 'Sense puntuació';
 
-      const files = [
-        ['Tipus', NOMS[tipusActual]],
-        ['Raïm', v.raim],
-        ['Anyada', v.collita],
+      var files = [
+        ['Tipus',     NOMS[tipusActual]],
+        ['Raïm',      v.raim],
+        ['Anyada',    v.collita],
         ['Graduació', v.graduacio ? v.graduacio + '%' : ''],
-        ['D.O.', v.do],
-        ['Bodega', v.bodega],
+        ['D.O.',      v.do],
+        ['Bodega',    v.bodega],
       ].filter(function(f){ return f[1]; });
 
       document.getElementById('m-files').innerHTML = files.map(function(f){
@@ -631,22 +674,38 @@
         return;
       }
 
-      var vi = {
-        id: Date.now(),
-        nom: nom,
-        raim:        document.getElementById('f-raim').value.trim(),
-        collita:     document.getElementById('f-collita').value.trim(),
-        graduacio:   document.getElementById('f-graduacio').value.trim(),
-        do:          document.getElementById('f-do').value.trim(),
-        bodega:      document.getElementById('f-bodega').value.trim(),
-        puntuacio:   puntuacioSeleccionada,
-        observacions: document.getElementById('f-obs').value.trim()
-      };
-
       var vins = getVins();
-      vins.unshift(vi);
-      setVins(vins);
 
+      if (modeEdicio) {
+        // Actualitzem el vi existent conservant l'id original
+        var idOriginal = vins[indexDetall].id;
+        vins[indexDetall] = {
+          id:           idOriginal,
+          nom:          nom,
+          raim:         document.getElementById('f-raim').value.trim(),
+          collita:      document.getElementById('f-collita').value.trim(),
+          graduacio:    document.getElementById('f-graduacio').value.trim(),
+          do:           document.getElementById('f-do').value.trim(),
+          bodega:       document.getElementById('f-bodega').value.trim(),
+          puntuacio:    puntuacioSeleccionada,
+          observacions: document.getElementById('f-obs').value.trim()
+        };
+      } else {
+        // Nou vi al principi de la llista
+        vins.unshift({
+          id:           Date.now(),
+          nom:          nom,
+          raim:         document.getElementById('f-raim').value.trim(),
+          collita:      document.getElementById('f-collita').value.trim(),
+          graduacio:    document.getElementById('f-graduacio').value.trim(),
+          do:           document.getElementById('f-do').value.trim(),
+          bodega:       document.getElementById('f-bodega').value.trim(),
+          puntuacio:    puntuacioSeleccionada,
+          observacions: document.getElementById('f-obs').value.trim()
+        });
+      }
+
+      setVins(vins);
       tornarLlista();
     }
 
