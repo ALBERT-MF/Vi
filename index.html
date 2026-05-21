@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Pas_04: Edició de vins -->
+<!-- Pas_04: Edició de vins + medies estrelles + vista mòbil centrada -->
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
@@ -19,6 +19,12 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    /* Fons general de pàgina (visible a l'ordinador) */
+    html {
+      background: #0d0508;
+      min-height: 100%;
+    }
+
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       background: #1a0a0f;
@@ -26,6 +32,10 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      /* Vista centrada tipus mòbil a l'ordinador */
+      max-width: 430px;
+      margin: 0 auto;
+      box-shadow: 0 0 40px rgba(0,0,0,0.8);
     }
 
     /* ===== HEADER ===== */
@@ -62,7 +72,6 @@
       border-radius: 10px;
       cursor: pointer;
     }
-
     .btn-back:active { opacity: 0.6; }
 
     /* ===== VISTES ===== */
@@ -71,9 +80,7 @@
       flex: 1;
       flex-direction: column;
     }
-    .vista.activa {
-      display: flex;
-    }
+    .vista.activa { display: flex; }
 
     /* ===== VISTA INICI ===== */
     #view-home main {
@@ -111,7 +118,6 @@
       border: none;
       color: inherit;
     }
-
     .card-tipus:active { transform: scale(0.96); }
 
     .card-tipus .emoji { font-size: 2.8rem; }
@@ -183,7 +189,7 @@
     .vi-card .vi-info { flex: 1; min-width: 0; }
     .vi-card .vi-nom { font-weight: 700; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .vi-card .vi-sub { font-size: 0.8rem; color: #9a7080; margin-top: 2px; }
-    .vi-card .vi-punts { font-size: 0.9rem; flex-shrink: 0; }
+    .vi-card .vi-punts { font-size: 0.85rem; flex-shrink: 0; letter-spacing: -1px; }
 
     .buit-missatge {
       text-align: center;
@@ -220,11 +226,7 @@
       gap: 14px;
     }
 
-    .camp {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .camp { display: flex; flex-direction: column; gap: 6px; }
 
     .camp label {
       font-size: 0.8rem;
@@ -249,26 +251,64 @@
     .camp input:focus,
     .camp textarea:focus { border-color: #c0406a; }
 
-    .camp textarea {
-      resize: none;
-      height: 80px;
-    }
+    .camp textarea { resize: none; height: 80px; }
 
+    /* ===== ESTRELLES (medies estrelles) ===== */
     .estreles {
       display: flex;
-      gap: 8px;
+      gap: 4px;
       padding: 4px 0;
     }
 
-    .estrela {
-      font-size: 1.8rem;
+    /* Contenidor de cada posició d'estrella */
+    .estrela-pos {
+      position: relative;
+      width: 2rem;
+      height: 2rem;
       cursor: pointer;
-      opacity: 0.3;
-      transition: opacity 0.15s, transform 0.1s;
+      flex-shrink: 0;
     }
 
-    .estrela.activa { opacity: 1; }
-    .estrela:active { transform: scale(1.2); }
+    /* Estrella base (buida, gris) */
+    .estrela-pos::before {
+      content: '★';
+      position: absolute;
+      font-size: 1.9rem;
+      color: rgba(255,200,0,0.2);
+      line-height: 1;
+      left: 0;
+      top: 0;
+    }
+
+    /* Estrella plena (daurada, s'amaga o es mostra per sobre) */
+    .estrela-pos .fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      width: 0%;   /* 0 = buida, 50% = mitja, 100% = plena */
+      color: #ffc800;
+      font-size: 1.9rem;
+      line-height: 1;
+      white-space: nowrap;
+      transition: width 0.1s;
+    }
+
+    .estrela-pos .fill::before {
+      content: '★';
+    }
+
+    /* Zones de clic (meitat esquerra i dreta) */
+    .estrela-pos .esq,
+    .estrela-pos .dret {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      z-index: 1;
+    }
+    .estrela-pos .esq { left: 0; }
+    .estrela-pos .dret { right: 0; }
 
     .btn-guardar {
       background: linear-gradient(135deg, #8b1a2e, #c0406a);
@@ -293,6 +333,8 @@
       background: rgba(0,0,0,0.7);
       z-index: 100;
       align-items: flex-end;
+      /* Centrem el modal igual que el body */
+      justify-content: center;
     }
     .modal-overlay.obert { display: flex; }
 
@@ -301,6 +343,7 @@
       border-radius: 20px 20px 0 0;
       padding: 24px 20px 36px;
       width: 100%;
+      max-width: 430px;
       max-height: 85vh;
       overflow-y: auto;
       animation: slideUp 0.25s ease-out;
@@ -319,16 +362,8 @@
       margin: 0 auto 20px;
     }
 
-    .modal-nom {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .modal-puntuacio {
-      font-size: 1.3rem;
-      margin-bottom: 16px;
-    }
+    .modal-nom { font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; }
+    .modal-puntuacio { font-size: 1.2rem; margin-bottom: 16px; letter-spacing: -1px; }
 
     .modal-fila {
       display: flex;
@@ -337,7 +372,6 @@
       border-bottom: 1px solid rgba(255,255,255,0.07);
       font-size: 0.9rem;
     }
-
     .modal-fila .etiqueta { color: #9a7080; }
     .modal-fila .valor { font-weight: 600; text-align: right; max-width: 60%; }
 
@@ -351,7 +385,6 @@
       color: #d0b0bc;
     }
 
-    /* Botons del modal: Editar i Eliminar */
     .modal-botons {
       display: flex;
       gap: 10px;
@@ -384,7 +417,6 @@
     }
     .btn-eliminar:active { background: #5a1020; }
 
-    /* ===== FOOTER ===== */
     footer {
       text-align: center;
       padding: 12px;
@@ -473,11 +505,7 @@
       <div class="camp">
         <label>Puntuació</label>
         <div class="estreles" id="estreles">
-          <span class="estrela" onclick="setPuntuacio(1)">★</span>
-          <span class="estrela" onclick="setPuntuacio(2)">★</span>
-          <span class="estrela" onclick="setPuntuacio(3)">★</span>
-          <span class="estrela" onclick="setPuntuacio(4)">★</span>
-          <span class="estrela" onclick="setPuntuacio(5)">★</span>
+          <!-- Les 5 posicions d'estrella es generen via JS -->
         </div>
       </div>
       <div class="camp">
@@ -508,10 +536,75 @@
     var tipusActual = 'negre';
     var indexDetall = -1;
     var puntuacioSeleccionada = 0;
-    var modeEdicio = false; // false = nou vi, true = editar vi existent
+    var modeEdicio = false;
 
     var EMOJIS = { negre: '🍷', blanc: '🥂', rosat: '🌸', cava: '🍾' };
     var NOMS   = { negre: 'Vi Negre', blanc: 'Vi Blanc', rosat: 'Vi Rosat', cava: 'Cava' };
+
+    // ===== ESTRELLES =====
+    // Creem les 5 posicions d'estrella al DOM
+    function crearEstreles() {
+      var cont = document.getElementById('estreles');
+      cont.innerHTML = '';
+      for (var n = 1; n <= 5; n++) {
+        (function(pos) {
+          var div = document.createElement('div');
+          div.className = 'estrela-pos';
+          div.id = 'estrela-' + pos;
+
+          var fill = document.createElement('span');
+          fill.className = 'fill';
+          div.appendChild(fill);
+
+          var esq = document.createElement('span');
+          esq.className = 'esq';
+          esq.onclick = (function(p){ return function(){ setPuntuacio(p - 0.5); }; })(pos);
+          div.appendChild(esq);
+
+          var dret = document.createElement('span');
+          dret.className = 'dret';
+          dret.onclick = (function(p){ return function(){ setPuntuacio(p); }; })(pos);
+          div.appendChild(dret);
+
+          cont.appendChild(div);
+        })(n);
+      }
+    }
+
+    function setPuntuacio(n) {
+      // Si tornem a clicar la mateixa puntuació, la resetejem
+      if (n === puntuacioSeleccionada) n = 0;
+      puntuacioSeleccionada = n;
+
+      for (var i = 1; i <= 5; i++) {
+        var fill = document.querySelector('#estrela-' + i + ' .fill');
+        if (!fill) continue;
+        if (n >= i) {
+          fill.style.width = '100%';      // estrella plena
+        } else if (n >= i - 0.5) {
+          fill.style.width = '50%';       // mitja estrella
+        } else {
+          fill.style.width = '0%';        // buida
+        }
+      }
+    }
+
+    // Format de puntuació per mostrar (ex: ★★★★½  4.5/5)
+    function formatPuntuacio(p) {
+      if (!p) return 'Sense puntuació';
+      var plenes = Math.floor(p);
+      var mitja  = (p % 1 === 0.5);
+      var text   = '★'.repeat(plenes) + (mitja ? '½' : '') + '  ' + p + '/5';
+      return text;
+    }
+
+    // Format curt per a les targes de la llista
+    function formatPuntuacioCurt(p) {
+      if (!p) return '—';
+      var plenes = Math.floor(p);
+      var mitja  = (p % 1 === 0.5);
+      return '★'.repeat(plenes) + (mitja ? '½' : '');
+    }
 
     // ===== NAVEGACIÓ =====
     function mostrarVista(id) {
@@ -532,13 +625,11 @@
       mostrarVista('view-home');
     }
 
-    // index = -1 vol dir nou vi; index >= 0 vol dir editar el vi d'aquell índex
     function obrirForm(index) {
       modeEdicio = (index >= 0);
       indexDetall = index;
 
       if (modeEdicio) {
-        // Carreguem les dades del vi existent
         var vins = getVins();
         var v = vins[index];
         document.getElementById('form-titol').textContent = '✏️ Editar vi';
@@ -552,7 +643,6 @@
         document.getElementById('f-obs').value       = v.observacions || '';
         setPuntuacio(v.puntuacio || 0);
       } else {
-        // Formulari buit per a un vi nou
         document.getElementById('form-titol').textContent = 'Nou ' + NOMS[tipusActual].toLowerCase();
         document.getElementById('btn-guardar').textContent = 'Guardar vi';
         ['f-nom','f-raim','f-collita','f-graduacio','f-do','f-bodega','f-obs'].forEach(function(id){
@@ -561,14 +651,11 @@
         setPuntuacio(0);
       }
 
-      // Tanquem el modal si estava obert
       document.getElementById('modal-overlay').classList.remove('obert');
       mostrarVista('view-form');
     }
 
-    function obrirEdicio() {
-      obrirForm(indexDetall);
-    }
+    function obrirEdicio() { obrirForm(indexDetall); }
 
     function tornarLlista() {
       renderLlista();
@@ -595,7 +682,7 @@
       }
 
       cont.innerHTML = vins.map(function(v, i) {
-        var estreles = v.puntuacio ? '★'.repeat(v.puntuacio) : '—';
+        var punts = formatPuntuacioCurt(v.puntuacio);
         var sub = [v.bodega, v.do, v.collita ? 'Anyada ' + v.collita : ''].filter(Boolean).join(' · ');
         return '<div class="vi-card" onclick="obrirDetall(' + i + ')">'
           + '<span class="vi-emoji">' + EMOJIS[tipusActual] + '</span>'
@@ -603,7 +690,7 @@
           + '<div class="vi-nom">' + v.nom + '</div>'
           + (sub ? '<div class="vi-sub">' + sub + '</div>' : '')
           + '</div>'
-          + '<span class="vi-punts">' + estreles + '</span>'
+          + '<span class="vi-punts">' + punts + '</span>'
           + '</div>';
       }).join('');
     }
@@ -615,9 +702,7 @@
       indexDetall = index;
 
       document.getElementById('m-nom').textContent = v.nom;
-      document.getElementById('m-puntuacio').textContent = v.puntuacio
-        ? '★'.repeat(v.puntuacio) + ' (' + v.puntuacio + '/5)'
-        : 'Sense puntuació';
+      document.getElementById('m-puntuacio').textContent = formatPuntuacio(v.puntuacio);
 
       var files = [
         ['Tipus',     NOMS[tipusActual]],
@@ -659,13 +744,6 @@
     }
 
     // ===== FORMULARI =====
-    function setPuntuacio(n) {
-      puntuacioSeleccionada = n;
-      document.querySelectorAll('.estrela').forEach(function(el, i){
-        el.classList.toggle('activa', i < n);
-      });
-    }
-
     function guardarVi() {
       var nom = document.getElementById('f-nom').value.trim();
       if (!nom) {
@@ -676,33 +754,23 @@
 
       var vins = getVins();
 
+      var viData = {
+        nom:          nom,
+        raim:         document.getElementById('f-raim').value.trim(),
+        collita:      document.getElementById('f-collita').value.trim(),
+        graduacio:    document.getElementById('f-graduacio').value.trim(),
+        do:           document.getElementById('f-do').value.trim(),
+        bodega:       document.getElementById('f-bodega').value.trim(),
+        puntuacio:    puntuacioSeleccionada,
+        observacions: document.getElementById('f-obs').value.trim()
+      };
+
       if (modeEdicio) {
-        // Actualitzem el vi existent conservant l'id original
-        var idOriginal = vins[indexDetall].id;
-        vins[indexDetall] = {
-          id:           idOriginal,
-          nom:          nom,
-          raim:         document.getElementById('f-raim').value.trim(),
-          collita:      document.getElementById('f-collita').value.trim(),
-          graduacio:    document.getElementById('f-graduacio').value.trim(),
-          do:           document.getElementById('f-do').value.trim(),
-          bodega:       document.getElementById('f-bodega').value.trim(),
-          puntuacio:    puntuacioSeleccionada,
-          observacions: document.getElementById('f-obs').value.trim()
-        };
+        viData.id = vins[indexDetall].id;
+        vins[indexDetall] = viData;
       } else {
-        // Nou vi al principi de la llista
-        vins.unshift({
-          id:           Date.now(),
-          nom:          nom,
-          raim:         document.getElementById('f-raim').value.trim(),
-          collita:      document.getElementById('f-collita').value.trim(),
-          graduacio:    document.getElementById('f-graduacio').value.trim(),
-          do:           document.getElementById('f-do').value.trim(),
-          bodega:       document.getElementById('f-bodega').value.trim(),
-          puntuacio:    puntuacioSeleccionada,
-          observacions: document.getElementById('f-obs').value.trim()
-        });
+        viData.id = Date.now();
+        vins.unshift(viData);
       }
 
       setVins(vins);
@@ -726,7 +794,8 @@
       });
     }
 
-    // Inici
+    // ===== INICI =====
+    crearEstreles();
     actualitzarComptadors();
   </script>
 
