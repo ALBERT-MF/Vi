@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Esta es la versión Pas_03 -->
+<!-- Pas_03: Llista i formulari de vins -->
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
@@ -28,11 +28,13 @@
       flex-direction: column;
     }
 
+    /* ===== HEADER ===== */
     header {
       background: #4a1020;
       padding: 20px 16px 16px;
       text-align: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      position: relative;
     }
 
     header h1 {
@@ -47,7 +49,34 @@
       margin-top: 4px;
     }
 
-    main {
+    .btn-back {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #f0e6ea;
+      font-size: 1.3rem;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .btn-back:active { opacity: 0.6; }
+
+    /* ===== VISTES ===== */
+    .vista {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+    }
+    .vista.activa {
+      display: flex;
+    }
+
+    /* ===== VISTA INICI ===== */
+    #view-home main {
       flex: 1;
       padding: 24px 16px;
       display: flex;
@@ -78,55 +107,275 @@
       align-items: center;
       gap: 10px;
       cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: transform 0.15s;
       border: none;
-      text-decoration: none;
       color: inherit;
-      position: relative;
-      overflow: hidden;
     }
 
-    .card-tipus:active {
-      transform: scale(0.96);
+    .card-tipus:active { transform: scale(0.96); }
+
+    .card-tipus .emoji { font-size: 2.8rem; }
+    .card-tipus .nom { font-size: 1rem; font-weight: 700; text-align: center; }
+    .card-tipus .comptador { font-size: 0.75rem; opacity: 0.7; }
+
+    .negre { background: linear-gradient(135deg, #3d0e1a, #6b1a2e); box-shadow: 0 4px 16px rgba(107,26,46,0.4); }
+    .blanc { background: linear-gradient(135deg, #4a3a00, #8a6e00); box-shadow: 0 4px 16px rgba(138,110,0,0.4); }
+    .rosat { background: linear-gradient(135deg, #5a1a3a, #c0406a); box-shadow: 0 4px 16px rgba(192,64,106,0.4); }
+    .cava  { background: linear-gradient(135deg, #2a3a1a, #4a6a2a); box-shadow: 0 4px 16px rgba(74,106,42,0.4); }
+
+    /* ===== VISTA LLISTA ===== */
+    #view-llista {
+      flex-direction: column;
     }
 
-    .card-tipus .emoji {
-      font-size: 2.8rem;
+    #view-llista .llista-header {
+      background: #4a1020;
+      padding: 20px 16px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
-    .card-tipus .nom {
-      font-size: 1rem;
+    #view-llista .llista-header h2 {
+      font-size: 1.3rem;
       font-weight: 700;
+    }
+
+    .btn-afegir {
+      background: #c0406a;
+      border: none;
+      color: white;
+      font-size: 1.6rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(192,64,106,0.5);
+      flex-shrink: 0;
+    }
+    .btn-afegir:active { transform: scale(0.92); }
+
+    #llista-contingut {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .vi-card {
+      background: #2a1018;
+      border-radius: 14px;
+      padding: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: transform 0.12s;
+    }
+    .vi-card:active { transform: scale(0.98); }
+
+    .vi-card .vi-emoji { font-size: 2rem; flex-shrink: 0; }
+
+    .vi-card .vi-info { flex: 1; min-width: 0; }
+    .vi-card .vi-nom { font-weight: 700; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vi-card .vi-sub { font-size: 0.8rem; color: #9a7080; margin-top: 2px; }
+
+    .vi-card .vi-punts { font-size: 0.9rem; flex-shrink: 0; }
+
+    .buit-missatge {
       text-align: center;
-      letter-spacing: 0.3px;
+      color: #5a3040;
+      margin-top: 60px;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+    .buit-missatge .buit-emoji { font-size: 3rem; display: block; margin-bottom: 10px; }
+
+    /* ===== VISTA FORMULARI ===== */
+    #view-form {
+      flex-direction: column;
     }
 
-    .card-tipus .comptador {
-      font-size: 0.75rem;
-      opacity: 0.7;
+    #view-form .form-header {
+      background: #4a1020;
+      padding: 20px 16px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
-    /* Colors per cada tipus */
-    .negre {
-      background: linear-gradient(135deg, #3d0e1a, #6b1a2e);
-      box-shadow: 0 4px 16px rgba(107, 26, 46, 0.4);
+    #view-form .form-header h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
     }
 
-    .blanc {
-      background: linear-gradient(135deg, #4a3a00, #8a6e00);
-      box-shadow: 0 4px 16px rgba(138, 110, 0, 0.4);
+    #form-contingut {
+      flex: 1;
+      padding: 20px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
-    .rosat {
-      background: linear-gradient(135deg, #5a1a3a, #c0406a);
-      box-shadow: 0 4px 16px rgba(192, 64, 106, 0.4);
+    .camp {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
-    .cava {
-      background: linear-gradient(135deg, #2a3a1a, #4a6a2a);
-      box-shadow: 0 4px 16px rgba(74, 106, 42, 0.4);
+    .camp label {
+      font-size: 0.8rem;
+      color: #9a7080;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
+    .camp input,
+    .camp textarea {
+      background: #2a1018;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #f0e6ea;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .camp input:focus,
+    .camp textarea:focus {
+      border-color: #c0406a;
+    }
+
+    .camp textarea {
+      resize: none;
+      height: 80px;
+    }
+
+    .estreles {
+      display: flex;
+      gap: 8px;
+      padding: 4px 0;
+    }
+
+    .estrela {
+      font-size: 1.8rem;
+      cursor: pointer;
+      opacity: 0.3;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .estrela.activa { opacity: 1; }
+    .estrela:active { transform: scale(1.2); }
+
+    .btn-guardar {
+      background: linear-gradient(135deg, #8b1a2e, #c0406a);
+      border: none;
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      margin-top: 8px;
+      box-shadow: 0 4px 16px rgba(192,64,106,0.4);
+    }
+    .btn-guardar:active { transform: scale(0.97); }
+
+    /* ===== MODAL DETALL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      align-items: flex-end;
+    }
+    .modal-overlay.obert {
+      display: flex;
+    }
+
+    .modal-sheet {
+      background: #2a1018;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 36px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slideUp 0.25s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+
+    .modal-handle {
+      width: 40px;
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+
+    .modal-nom {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .modal-puntuacio {
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+    }
+
+    .modal-fila {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      font-size: 0.9rem;
+    }
+
+    .modal-fila .etiqueta { color: #9a7080; }
+    .modal-fila .valor { font-weight: 600; text-align: right; max-width: 60%; }
+
+    .modal-obs {
+      margin-top: 14px;
+      padding: 14px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #d0b0bc;
+    }
+
+    .btn-eliminar {
+      background: #3d0e1a;
+      border: 1px solid #7a1a2e;
+      color: #f0a0b0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+    }
+    .btn-eliminar:active { background: #5a1020; }
+
+    /* ===== FOOTER ===== */
     footer {
       text-align: center;
       padding: 12px;
@@ -137,70 +386,288 @@
 </head>
 <body>
 
-  <header>
-    <h1>🍷 Celler de Vins</h1>
-    <p>El meu registre personal</p>
-  </header>
+  <!-- ========== VISTA INICI ========== -->
+  <div id="view-home" class="vista activa">
+    <header>
+      <h1>🍷 Celler de Vins</h1>
+      <p>El meu registre personal</p>
+    </header>
+    <main>
+      <p class="titol-seccio">Selecciona el tipus de vi</p>
+      <div class="grid-tipus">
+        <button class="card-tipus negre" onclick="obrirLlista('negre')">
+          <span class="emoji">🍷</span>
+          <span class="nom">Vi Negre</span>
+          <span class="comptador" id="comp-negre">0 vins</span>
+        </button>
+        <button class="card-tipus blanc" onclick="obrirLlista('blanc')">
+          <span class="emoji">🥂</span>
+          <span class="nom">Vi Blanc</span>
+          <span class="comptador" id="comp-blanc">0 vins</span>
+        </button>
+        <button class="card-tipus rosat" onclick="obrirLlista('rosat')">
+          <span class="emoji">🌸</span>
+          <span class="nom">Vi Rosat</span>
+          <span class="comptador" id="comp-rosat">0 vins</span>
+        </button>
+        <button class="card-tipus cava" onclick="obrirLlista('cava')">
+          <span class="emoji">🍾</span>
+          <span class="nom">Cava</span>
+          <span class="comptador" id="comp-cava">0 vins</span>
+        </button>
+      </div>
+    </main>
+    <footer>Celler de Vins · Ús personal</footer>
+  </div>
 
-  <main>
-    <p class="titol-seccio">Selecciona el tipus de vi</p>
-
-    <div class="grid-tipus">
-
-      <button class="card-tipus negre" onclick="seleccionar('negre')">
-        <span class="emoji">🍷</span>
-        <span class="nom">Vi Negre</span>
-        <span class="comptador" id="comp-negre">0 vins</span>
-      </button>
-
-      <button class="card-tipus blanc" onclick="seleccionar('blanc')">
-        <span class="emoji">🥂</span>
-        <span class="nom">Vi Blanc</span>
-        <span class="comptador" id="comp-blanc">0 vins</span>
-      </button>
-
-      <button class="card-tipus rosat" onclick="seleccionar('rosat')">
-        <span class="emoji">🌸</span>
-        <span class="nom">Vi Rosat</span>
-        <span class="comptador" id="comp-rosat">0 vins</span>
-      </button>
-
-      <button class="card-tipus cava" onclick="seleccionar('cava')">
-        <span class="emoji">🍾</span>
-        <span class="nom">Cava</span>
-        <span class="comptador" id="comp-cava">0 vins</span>
-      </button>
-
+  <!-- ========== VISTA LLISTA ========== -->
+  <div id="view-llista" class="vista">
+    <div class="llista-header">
+      <button class="btn-back" onclick="tornarInici()">←</button>
+      <h2 id="llista-titol">Vi Negre</h2>
+      <button class="btn-afegir" onclick="obrirForm()">+</button>
     </div>
-  </main>
+    <div id="llista-contingut"></div>
+  </div>
 
-  <footer>Celler de Vins · Ús personal</footer>
+  <!-- ========== VISTA FORMULARI ========== -->
+  <div id="view-form" class="vista">
+    <div class="form-header">
+      <button class="btn-back" onclick="tornarLlista()">←</button>
+      <h2 id="form-titol">Nou vi</h2>
+    </div>
+    <div id="form-contingut">
+      <div class="camp">
+        <label>Nom del vi *</label>
+        <input type="text" id="f-nom" placeholder="Ex: Protos Reserva">
+      </div>
+      <div class="camp">
+        <label>Raïm / Varietat</label>
+        <input type="text" id="f-raim" placeholder="Ex: Tempranillo, Cabernet...">
+      </div>
+      <div class="camp">
+        <label>Anyada (collita)</label>
+        <input type="number" id="f-collita" placeholder="Ex: 2019" min="1900" max="2099">
+      </div>
+      <div class="camp">
+        <label>Graduació (%)</label>
+        <input type="number" id="f-graduacio" placeholder="Ex: 13.5" step="0.5" min="0" max="25">
+      </div>
+      <div class="camp">
+        <label>Denominació d'Origen (DO)</label>
+        <input type="text" id="f-do" placeholder="Ex: Ribera del Duero">
+      </div>
+      <div class="camp">
+        <label>Bodega / Productor</label>
+        <input type="text" id="f-bodega" placeholder="Ex: Bodegas Protos">
+      </div>
+      <div class="camp">
+        <label>Puntuació</label>
+        <div class="estreles" id="estreles">
+          <span class="estrela" onclick="setPuntuacio(1)">★</span>
+          <span class="estrela" onclick="setPuntuacio(2)">★</span>
+          <span class="estrela" onclick="setPuntuacio(3)">★</span>
+          <span class="estrela" onclick="setPuntuacio(4)">★</span>
+          <span class="estrela" onclick="setPuntuacio(5)">★</span>
+        </div>
+      </div>
+      <div class="camp">
+        <label>Observacions / Notes de cata</label>
+        <textarea id="f-obs" placeholder="Colors, aromes, sabor, maridatge..."></textarea>
+      </div>
+      <button class="btn-guardar" onclick="guardarVi()">Guardar vi</button>
+    </div>
+  </div>
+
+  <!-- ========== MODAL DETALL ========== -->
+  <div id="modal-overlay" class="modal-overlay" onclick="tancarModal(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-nom" id="m-nom"></div>
+      <div class="modal-puntuacio" id="m-puntuacio"></div>
+      <div id="m-files"></div>
+      <div class="modal-obs" id="m-obs" style="display:none"></div>
+      <button class="btn-eliminar" onclick="eliminarVi()">🗑 Eliminar aquest vi</button>
+    </div>
+  </div>
 
   <script>
-    // Carreguem les dades del localStorage i actualitzem els comptadors
+    // ===== ESTAT GLOBAL =====
+    let tipusActual = 'negre';
+    let indexDetall = -1;
+    let puntuacioSeleccionada = 0;
+
+    const EMOJIS = { negre: '🍷', blanc: '🥂', rosat: '🌸', cava: '🍾' };
+    const NOMS   = { negre: 'Vi Negre', blanc: 'Vi Blanc', rosat: 'Vi Rosat', cava: 'Cava' };
+
+    // ===== NAVEGACIÓ =====
+    function mostrarVista(id) {
+      document.querySelectorAll('.vista').forEach(v => v.classList.remove('activa'));
+      document.getElementById(id).classList.add('activa');
+      window.scrollTo(0, 0);
+    }
+
+    function obrirLlista(tipus) {
+      tipusActual = tipus;
+      document.getElementById('llista-titol').textContent = EMOJIS[tipus] + ' ' + NOMS[tipus];
+      renderLlista();
+      mostrarVista('view-llista');
+    }
+
+    function tornarInici() {
+      actualitzarComptadors();
+      mostrarVista('view-home');
+    }
+
+    function obrirForm() {
+      ['f-nom','f-raim','f-collita','f-graduacio','f-do','f-bodega','f-obs'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      setPuntuacio(0);
+      document.getElementById('form-titol').textContent = 'Nou ' + NOMS[tipusActual].toLowerCase();
+      mostrarVista('view-form');
+    }
+
+    function tornarLlista() {
+      renderLlista();
+      mostrarVista('view-llista');
+    }
+
+    // ===== LLISTA =====
+    function getVins() {
+      return JSON.parse(localStorage.getItem('vins_' + tipusActual) || '[]');
+    }
+
+    function setVins(arr) {
+      localStorage.setItem('vins_' + tipusActual, JSON.stringify(arr));
+    }
+
+    function renderLlista() {
+      const vins = getVins();
+      const cont = document.getElementById('llista-contingut');
+
+      if (vins.length === 0) {
+        cont.innerHTML = '<div class="buit-missatge"><span class="buit-emoji">' + EMOJIS[tipusActual] + '</span>Encara no hi ha cap vi aquí.<br>Prem <strong>+</strong> per afegir-ne un!</div>';
+        return;
+      }
+
+      cont.innerHTML = vins.map((v, i) => {
+        const estreles = v.puntuacio ? '★'.repeat(v.puntuacio) : '—';
+        const sub = [v.bodega, v.do, v.collita ? 'Anyada ' + v.collita : ''].filter(Boolean).join(' · ');
+        return '<div class="vi-card" onclick="obrirDetall(' + i + ')">'
+          + '<span class="vi-emoji">' + EMOJIS[tipusActual] + '</span>'
+          + '<div class="vi-info">'
+          + '<div class="vi-nom">' + v.nom + '</div>'
+          + (sub ? '<div class="vi-sub">' + sub + '</div>' : '')
+          + '</div>'
+          + '<span class="vi-punts">' + estreles + '</span>'
+          + '</div>';
+      }).join('');
+    }
+
+    // ===== DETALL / MODAL =====
+    function obrirDetall(index) {
+      const vins = getVins();
+      const v = vins[index];
+      indexDetall = index;
+
+      document.getElementById('m-nom').textContent = v.nom;
+      document.getElementById('m-puntuacio').textContent = v.puntuacio
+        ? '★'.repeat(v.puntuacio) + ' (' + v.puntuacio + '/5)'
+        : 'Sense puntuació';
+
+      const files = [
+        ['Tipus', NOMS[tipusActual]],
+        ['Raïm', v.raim],
+        ['Anyada', v.collita],
+        ['Graduació', v.graduacio ? v.graduacio + '%' : ''],
+        ['D.O.', v.do],
+        ['Bodega', v.bodega],
+      ].filter(function(f){ return f[1]; });
+
+      document.getElementById('m-files').innerHTML = files.map(function(f){
+        return '<div class="modal-fila"><span class="etiqueta">' + f[0] + '</span><span class="valor">' + f[1] + '</span></div>';
+      }).join('');
+
+      var obsEl = document.getElementById('m-obs');
+      if (v.observacions) {
+        obsEl.textContent = v.observacions;
+        obsEl.style.display = 'block';
+      } else {
+        obsEl.style.display = 'none';
+      }
+
+      document.getElementById('modal-overlay').classList.add('obert');
+    }
+
+    function tancarModal(event) {
+      if (event.target === document.getElementById('modal-overlay')) {
+        document.getElementById('modal-overlay').classList.remove('obert');
+      }
+    }
+
+    function eliminarVi() {
+      if (!confirm('Segur que vols eliminar aquest vi?')) return;
+      var vins = getVins();
+      vins.splice(indexDetall, 1);
+      setVins(vins);
+      document.getElementById('modal-overlay').classList.remove('obert');
+      renderLlista();
+    }
+
+    // ===== FORMULARI =====
+    function setPuntuacio(n) {
+      puntuacioSeleccionada = n;
+      document.querySelectorAll('.estrela').forEach(function(el, i){
+        el.classList.toggle('activa', i < n);
+      });
+    }
+
+    function guardarVi() {
+      var nom = document.getElementById('f-nom').value.trim();
+      if (!nom) {
+        alert('El nom del vi és obligatori.');
+        document.getElementById('f-nom').focus();
+        return;
+      }
+
+      var vi = {
+        id: Date.now(),
+        nom: nom,
+        raim:        document.getElementById('f-raim').value.trim(),
+        collita:     document.getElementById('f-collita').value.trim(),
+        graduacio:   document.getElementById('f-graduacio').value.trim(),
+        do:          document.getElementById('f-do').value.trim(),
+        bodega:      document.getElementById('f-bodega').value.trim(),
+        puntuacio:   puntuacioSeleccionada,
+        observacions: document.getElementById('f-obs').value.trim()
+      };
+
+      var vins = getVins();
+      vins.unshift(vi);
+      setVins(vins);
+
+      tornarLlista();
+    }
+
+    // ===== COMPTADORS INICI =====
     function actualitzarComptadors() {
-      const tipus = ['negre', 'blanc', 'rosat', 'cava'];
-      tipus.forEach(t => {
-        const vins = JSON.parse(localStorage.getItem('vins_' + t) || '[]');
-        const el = document.getElementById('comp-' + t);
-        el.textContent = vins.length === 1 ? '1 vi' : vins.length + ' vins';
+      ['negre', 'blanc', 'rosat', 'cava'].forEach(function(t) {
+        var vins = JSON.parse(localStorage.getItem('vins_' + t) || '[]');
+        var el = document.getElementById('comp-' + t);
+        if (el) el.textContent = vins.length === 1 ? '1 vi' : vins.length + ' vins';
       });
     }
 
-    function seleccionar(tipus) {
-      // De moment mostrem un avís — al Pas_03 aquí anirà la pantalla de cerca
-      alert('Has seleccionat: ' + tipus.toUpperCase() + '\n\n(La pantalla de cerca s\'afegirà al Pas_03)');
-    }
-
-    // Registrem el Service Worker
+    // ===== SERVICE WORKER =====
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
+      window.addEventListener('load', function() {
         navigator.serviceWorker.register('./sw.js')
-          .catch(err => console.error('SW error:', err));
+          .catch(function(err){ console.error('SW error:', err); });
       });
     }
 
-    // Iniciem
+    // Inici
     actualitzarComptadors();
   </script>
 
