@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Pas_04: Edició de vins + medies estrelles + vista mòbil centrada -->
+<!-- Pas_05: Cerca i filtres -->
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
@@ -163,6 +163,84 @@
     }
     .btn-afegir:active { transform: scale(0.92); }
 
+    /* ===== BARRA DE CERCA I ORDRE ===== */
+    .cerca-barra {
+      padding: 10px 16px;
+      background: #1a0a0f;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .cerca-input-wrap {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .cerca-icona {
+      position: absolute;
+      left: 10px;
+      font-size: 0.9rem;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    #cerca-input {
+      width: 100%;
+      background: #2a1018;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px 32px 10px 32px;
+      color: #f0e6ea;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #cerca-input:focus { border-color: #c0406a; }
+    #cerca-input::placeholder { color: #5a3040; }
+
+    .cerca-esborrar {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #9a7080;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 4px;
+      display: none;
+    }
+    .cerca-esborrar.visible { display: block; }
+
+    #ordre-select {
+      background: #2a1018;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px 6px;
+      color: #f0e6ea;
+      font-size: 0.78rem;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      max-width: 110px;
+    }
+    #ordre-select:focus { border-color: #c0406a; }
+
+    /* Comptador de resultats */
+    .cerca-resum {
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      color: #7a5060;
+      background: #1a0a0f;
+      display: none;
+    }
+    .cerca-resum.visible { display: block; }
+
     #llista-contingut {
       flex: 1;
       padding: 16px;
@@ -190,6 +268,14 @@
     .vi-card .vi-nom { font-weight: 700; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .vi-card .vi-sub { font-size: 0.8rem; color: #9a7080; margin-top: 2px; }
     .vi-card .vi-punts { font-size: 0.85rem; flex-shrink: 0; letter-spacing: -1px; }
+
+    /* Paraula cercada ressaltada */
+    .highlight {
+      background: rgba(192,64,106,0.3);
+      border-radius: 3px;
+      padding: 0 2px;
+      color: #f0e6ea;
+    }
 
     .buit-missatge {
       text-align: center;
@@ -260,7 +346,6 @@
       padding: 4px 0;
     }
 
-    /* Contenidor de cada posició d'estrella */
     .estrela-pos {
       position: relative;
       width: 2rem;
@@ -269,7 +354,6 @@
       flex-shrink: 0;
     }
 
-    /* Estrella base (buida, gris) */
     .estrela-pos::before {
       content: '★';
       position: absolute;
@@ -280,13 +364,12 @@
       top: 0;
     }
 
-    /* Estrella plena (daurada, s'amaga o es mostra per sobre) */
     .estrela-pos .fill {
       position: absolute;
       top: 0;
       left: 0;
       overflow: hidden;
-      width: 0%;   /* 0 = buida, 50% = mitja, 100% = plena */
+      width: 0%;
       color: #ffc800;
       font-size: 1.9rem;
       line-height: 1;
@@ -298,7 +381,6 @@
       content: '★';
     }
 
-    /* Zones de clic (meitat esquerra i dreta) */
     .estrela-pos .esq,
     .estrela-pos .dret {
       position: absolute;
@@ -333,7 +415,6 @@
       background: rgba(0,0,0,0.7);
       z-index: 100;
       align-items: flex-end;
-      /* Centrem el modal igual que el body */
       justify-content: center;
     }
     .modal-overlay.obert { display: flex; }
@@ -468,6 +549,25 @@
       <h2 id="llista-titol">Vi Negre</h2>
       <button class="btn-afegir" onclick="obrirForm(-1)">+</button>
     </div>
+
+    <!-- Barra de cerca i ordre -->
+    <div class="cerca-barra">
+      <div class="cerca-input-wrap">
+        <span class="cerca-icona">🔍</span>
+        <input type="text" id="cerca-input"
+               placeholder="Cerca nom, bodega, raïm..."
+               oninput="onCercaInput()">
+        <button class="cerca-esborrar" id="cerca-esborrar" onclick="esborrarCerca()">✕</button>
+      </div>
+      <select id="ordre-select" onchange="renderLlista()">
+        <option value="defecte">Entrada ↕</option>
+        <option value="puntuacio">★ Millor</option>
+        <option value="nom">A → Z</option>
+        <option value="collita">Anyada ↓</option>
+      </select>
+    </div>
+    <div class="cerca-resum" id="cerca-resum"></div>
+
     <div id="llista-contingut"></div>
   </div>
 
@@ -542,7 +642,6 @@
     var NOMS   = { negre: 'Vi Negre', blanc: 'Vi Blanc', rosat: 'Vi Rosat', cava: 'Cava' };
 
     // ===== ESTRELLES =====
-    // Creem les 5 posicions d'estrella al DOM
     function crearEstreles() {
       var cont = document.getElementById('estreles');
       cont.innerHTML = '';
@@ -572,38 +671,59 @@
     }
 
     function setPuntuacio(n) {
-      // Si tornem a clicar la mateixa puntuació, la resetejem
       if (n === puntuacioSeleccionada) n = 0;
       puntuacioSeleccionada = n;
-
       for (var i = 1; i <= 5; i++) {
         var fill = document.querySelector('#estrela-' + i + ' .fill');
         if (!fill) continue;
-        if (n >= i) {
-          fill.style.width = '100%';      // estrella plena
-        } else if (n >= i - 0.5) {
-          fill.style.width = '50%';       // mitja estrella
-        } else {
-          fill.style.width = '0%';        // buida
-        }
+        if (n >= i)            fill.style.width = '100%';
+        else if (n >= i - 0.5) fill.style.width = '50%';
+        else                   fill.style.width = '0%';
       }
     }
 
-    // Format de puntuació per mostrar (ex: ★★★★½  4.5/5)
     function formatPuntuacio(p) {
       if (!p) return 'Sense puntuació';
       var plenes = Math.floor(p);
       var mitja  = (p % 1 === 0.5);
-      var text   = '★'.repeat(plenes) + (mitja ? '½' : '') + '  ' + p + '/5';
-      return text;
+      return '★'.repeat(plenes) + (mitja ? '½' : '') + '  ' + p + '/5';
     }
 
-    // Format curt per a les targes de la llista
     function formatPuntuacioCurt(p) {
       if (!p) return '—';
       var plenes = Math.floor(p);
       var mitja  = (p % 1 === 0.5);
       return '★'.repeat(plenes) + (mitja ? '½' : '');
+    }
+
+    // ===== CERCA =====
+    function onCercaInput() {
+      var val = document.getElementById('cerca-input').value;
+      var btn = document.getElementById('cerca-esborrar');
+      if (val.length > 0) {
+        btn.classList.add('visible');
+      } else {
+        btn.classList.remove('visible');
+      }
+      renderLlista();
+    }
+
+    function esborrarCerca() {
+      document.getElementById('cerca-input').value = '';
+      document.getElementById('cerca-esborrar').classList.remove('visible');
+      renderLlista();
+      document.getElementById('cerca-input').focus();
+    }
+
+    // Ressalta el text cercat dins d'una cadena (retorna HTML segur)
+    function ressaltar(text, cerca) {
+      if (!cerca || !text) return escHTML(text || '');
+      var re = new RegExp('(' + cerca.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      return escHTML(text).replace(re, '<mark class="highlight">$1</mark>');
+    }
+
+    function escHTML(s) {
+      return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
     // ===== NAVEGACIÓ =====
@@ -616,6 +736,9 @@
     function obrirLlista(tipus) {
       tipusActual = tipus;
       document.getElementById('llista-titol').textContent = EMOJIS[tipus] + ' ' + NOMS[tipus];
+      // Netejem la cerca quan canviem de categoria
+      document.getElementById('cerca-input').value = '';
+      document.getElementById('cerca-esborrar').classList.remove('visible');
       renderLlista();
       mostrarVista('view-llista');
     }
@@ -671,24 +794,82 @@
       localStorage.setItem('vins_' + tipusActual, JSON.stringify(arr));
     }
 
-    // ===== LLISTA =====
+    // ===== LLISTA (amb cerca i ordre) =====
     function renderLlista() {
-      var vins = getVins();
+      var vinsTotal = getVins();
       var cont = document.getElementById('llista-contingut');
+      var resumEl = document.getElementById('cerca-resum');
 
-      if (vins.length === 0) {
-        cont.innerHTML = '<div class="buit-missatge"><span class="buit-emoji">' + EMOJIS[tipusActual] + '</span>Encara no hi ha cap vi aquí.<br>Prem <strong>+</strong> per afegir-ne un!</div>';
+      // --- Filtre de cerca ---
+      var cerca = (document.getElementById('cerca-input').value || '').trim().toLowerCase();
+
+      // Mantenim l'índex original per poder editar/esborrar correctament
+      var items = [];
+      vinsTotal.forEach(function(v, i) {
+        if (!cerca) {
+          items.push({ vi: v, idx: i });
+        } else {
+          var coincideix = (v.nom     || '').toLowerCase().indexOf(cerca) >= 0
+                        || (v.bodega  || '').toLowerCase().indexOf(cerca) >= 0
+                        || (v.raim    || '').toLowerCase().indexOf(cerca) >= 0
+                        || (v.do      || '').toLowerCase().indexOf(cerca) >= 0;
+          if (coincideix) items.push({ vi: v, idx: i });
+        }
+      });
+
+      // --- Ordenació ---
+      var ordre = document.getElementById('ordre-select').value;
+      if (ordre === 'puntuacio') {
+        items.sort(function(a, b) { return (b.vi.puntuacio || 0) - (a.vi.puntuacio || 0); });
+      } else if (ordre === 'nom') {
+        items.sort(function(a, b) {
+          return (a.vi.nom || '').localeCompare(b.vi.nom || '', 'ca', { sensitivity: 'base' });
+        });
+      } else if (ordre === 'collita') {
+        items.sort(function(a, b) { return (b.vi.collita || 0) - (a.vi.collita || 0); });
+      }
+      // 'defecte' → ordre d'entrada (ja ve de localStorage)
+
+      // --- Resum de cerca ---
+      if (cerca) {
+        resumEl.textContent = items.length + ' resultat' + (items.length !== 1 ? 's' : '') + ' per "' + cerca + '"';
+        resumEl.classList.add('visible');
+      } else {
+        resumEl.classList.remove('visible');
+      }
+
+      // --- Llista buida ---
+      if (items.length === 0) {
+        if (cerca) {
+          cont.innerHTML = '<div class="buit-missatge">'
+            + '<span class="buit-emoji">🔍</span>'
+            + 'Cap vi coincideix amb <strong>"' + escHTML(cerca) + '"</strong>.<br>'
+            + 'Prova amb un altre terme.</div>';
+        } else {
+          cont.innerHTML = '<div class="buit-missatge">'
+            + '<span class="buit-emoji">' + EMOJIS[tipusActual] + '</span>'
+            + 'Encara no hi ha cap vi aquí.<br>'
+            + 'Prem <strong>+</strong> per afegir-ne un!</div>';
+        }
         return;
       }
 
-      cont.innerHTML = vins.map(function(v, i) {
+      // --- Renderitzem les targetes ---
+      cont.innerHTML = items.map(function(item) {
+        var v   = item.vi;
+        var idx = item.idx;
         var punts = formatPuntuacioCurt(v.puntuacio);
         var sub = [v.bodega, v.do, v.collita ? 'Anyada ' + v.collita : ''].filter(Boolean).join(' · ');
-        return '<div class="vi-card" onclick="obrirDetall(' + i + ')">'
+
+        // Ressaltem la paraula cercada al nom i al subtítol
+        var nomHTML = cerca ? ressaltar(v.nom, cerca) : escHTML(v.nom);
+        var subHTML = cerca ? ressaltar(sub, cerca) : escHTML(sub);
+
+        return '<div class="vi-card" onclick="obrirDetall(' + idx + ')">'
           + '<span class="vi-emoji">' + EMOJIS[tipusActual] + '</span>'
           + '<div class="vi-info">'
-          + '<div class="vi-nom">' + v.nom + '</div>'
-          + (sub ? '<div class="vi-sub">' + sub + '</div>' : '')
+          + '<div class="vi-nom">' + nomHTML + '</div>'
+          + (sub ? '<div class="vi-sub">' + subHTML + '</div>' : '')
           + '</div>'
           + '<span class="vi-punts">' + punts + '</span>'
           + '</div>';
@@ -714,7 +895,8 @@
       ].filter(function(f){ return f[1]; });
 
       document.getElementById('m-files').innerHTML = files.map(function(f){
-        return '<div class="modal-fila"><span class="etiqueta">' + f[0] + '</span><span class="valor">' + f[1] + '</span></div>';
+        return '<div class="modal-fila"><span class="etiqueta">' + f[0]
+          + '</span><span class="valor">' + escHTML(String(f[1])) + '</span></div>';
       }).join('');
 
       var obsEl = document.getElementById('m-obs');
