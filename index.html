@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Pas_06: Exportació / còpia de seguretat -->
+<!-- Pas_07: Vista global "Tots els vins" + subtítols anyada·D.O. -->
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
@@ -144,6 +144,28 @@
     .rosat { background: linear-gradient(135deg, #5a1a3a, #c0406a); box-shadow: 0 4px 16px rgba(192,64,106,0.4); }
     .cava  { background: linear-gradient(135deg, #2a3a1a, #4a6a2a); box-shadow: 0 4px 16px rgba(74,106,42,0.4); }
 
+    /* Botó "Tots els vins" */
+    .card-tots {
+      border-radius: 16px;
+      padding: 18px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      border: none;
+      color: inherit;
+      background: linear-gradient(135deg, #1e1e2e, #2a2a4a);
+      box-shadow: 0 4px 16px rgba(80,80,160,0.3);
+      border: 1px solid rgba(120,120,200,0.2);
+      transition: transform 0.15s;
+    }
+    .card-tots:active { transform: scale(0.97); }
+    .card-tots .tots-emoji { font-size: 1.8rem; }
+    .card-tots .tots-info { flex: 1; text-align: left; }
+    .card-tots .tots-nom { font-size: 1rem; font-weight: 700; }
+    .card-tots .tots-sub { font-size: 0.78rem; color: #9090c0; margin-top: 3px; }
+    .card-tots .tots-count { font-size: 0.85rem; color: #8080b0; flex-shrink: 0; }
+
     /* ===== VISTA LLISTA ===== */
     #view-llista { flex-direction: column; }
 
@@ -246,6 +268,50 @@
     }
     #ordre-select:focus { border-color: #c0406a; }
 
+    /* Cerca de la vista tots */
+    #tots-cerca-input {
+      width: 100%;
+      background: #2a1018;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px 32px 10px 32px;
+      color: #f0e6ea;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #tots-cerca-input:focus { border-color: #8080d0; }
+    #tots-cerca-input::placeholder { color: #5a3040; }
+
+    #tots-cerca-esborrar {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #9a7080;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 4px;
+      display: none;
+    }
+    #tots-cerca-esborrar.visible { display: block; }
+
+    #tots-ordre-select {
+      background: #2a1018;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px 6px;
+      color: #f0e6ea;
+      font-size: 0.78rem;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      max-width: 110px;
+    }
+    #tots-ordre-select:focus { border-color: #8080d0; }
+
     .cerca-resum {
       padding: 6px 16px;
       font-size: 0.75rem;
@@ -264,10 +330,61 @@
       gap: 12px;
     }
 
+    /* ===== VISTA TOTS ELS VINS ===== */
+    #view-tots { flex-direction: column; }
+
+    #view-tots .tots-header {
+      background: #1e1e3a;
+      padding: 20px 16px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    #view-tots .tots-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    #tots-contingut {
+      flex: 1;
+      padding: 12px 16px 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* Capçalera de secció per tipus */
+    .seccio-tipus {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 0 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 4px;
+    }
+    .seccio-tipus:first-child { padding-top: 4px; }
+
+    .seccio-tipus .seccio-emoji { font-size: 1.4rem; }
+    .seccio-tipus .seccio-nom { font-size: 0.9rem; font-weight: 700; color: #c9909f; text-transform: uppercase; letter-spacing: 1px; }
+    .seccio-tipus .seccio-count { font-size: 0.75rem; color: #7a5060; margin-left: auto; }
+
+    /* Contenidor de vins d'una secció */
+    .seccio-vins {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    /* ===== TARJETES DE VI (compartit llista + tots) ===== */
     .vi-card {
       background: #2a1018;
       border-radius: 14px;
-      padding: 16px;
+      padding: 14px 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -277,11 +394,14 @@
     }
     .vi-card:active { transform: scale(0.98); }
 
-    .vi-card .vi-emoji { font-size: 2rem; flex-shrink: 0; }
+    .vi-card .vi-emoji { font-size: 1.8rem; flex-shrink: 0; }
     .vi-card .vi-info { flex: 1; min-width: 0; }
     .vi-card .vi-nom { font-weight: 700; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .vi-card .vi-sub { font-size: 0.8rem; color: #9a7080; margin-top: 2px; }
+    .vi-card .vi-sub { font-size: 0.8rem; color: #9a7080; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .vi-card .vi-punts { font-size: 0.85rem; flex-shrink: 0; letter-spacing: -1px; }
+
+    /* En la vista tots, l'emoji és més petit (el tipus ja és evident per la secció) */
+    #tots-contingut .vi-card .vi-emoji { font-size: 1.4rem; }
 
     .highlight {
       background: rgba(192,64,106,0.3);
@@ -665,11 +785,21 @@
           <span class="comptador" id="comp-cava">0 vins</span>
         </button>
       </div>
+
+      <!-- Botó tots els vins -->
+      <button class="card-tots" onclick="obrirTots()">
+        <span class="tots-emoji">📋</span>
+        <div class="tots-info">
+          <div class="tots-nom">Tots els vins</div>
+          <div class="tots-sub">Llista completa per tipus · nom · anyada · D.O.</div>
+        </div>
+        <span class="tots-count" id="comp-tots">0</span>
+      </button>
     </main>
     <footer>Celler de Vins · Ús personal</footer>
   </div>
 
-  <!-- ========== VISTA LLISTA ========== -->
+  <!-- ========== VISTA LLISTA (per tipus) ========== -->
   <div id="view-llista" class="vista">
     <div class="llista-header">
       <button class="btn-back" onclick="tornarInici()">←</button>
@@ -681,20 +811,48 @@
       <div class="cerca-input-wrap">
         <span class="cerca-icona">🔍</span>
         <input type="text" id="cerca-input"
-               placeholder="Cerca nom, bodega, raïm..."
+               placeholder="Cerca nom, D.O., raïm..."
                oninput="onCercaInput()">
         <button class="cerca-esborrar" id="cerca-esborrar" onclick="esborrarCerca()">✕</button>
       </div>
       <select id="ordre-select" onchange="renderLlista()">
         <option value="defecte">Entrada ↕</option>
-        <option value="puntuacio">★ Millor</option>
         <option value="nom">A → Z</option>
         <option value="collita">Anyada ↓</option>
+        <option value="do">D.O.</option>
+        <option value="puntuacio">★ Millor</option>
       </select>
     </div>
     <div class="cerca-resum" id="cerca-resum"></div>
 
     <div id="llista-contingut"></div>
+  </div>
+
+  <!-- ========== VISTA TOTS ELS VINS ========== -->
+  <div id="view-tots" class="vista">
+    <div class="tots-header">
+      <button class="btn-back" onclick="tornarInici()">←</button>
+      <h2>📋 Tots els vins</h2>
+    </div>
+
+    <div class="cerca-barra">
+      <div class="cerca-input-wrap">
+        <span class="cerca-icona">🔍</span>
+        <input type="text" id="tots-cerca-input"
+               placeholder="Cerca nom, D.O., raïm, bodega..."
+               oninput="onTotsCercaInput()">
+        <button class="cerca-esborrar" id="tots-cerca-esborrar" onclick="esborrarCercaTots()">✕</button>
+      </div>
+      <select id="tots-ordre-select" onchange="renderTots()">
+        <option value="nom">A → Z</option>
+        <option value="collita">Anyada ↓</option>
+        <option value="do">D.O.</option>
+        <option value="puntuacio">★ Millor</option>
+      </select>
+    </div>
+    <div class="cerca-resum" id="tots-cerca-resum"></div>
+
+    <div id="tots-contingut"></div>
   </div>
 
   <!-- ========== VISTA FORMULARI ========== -->
@@ -795,6 +953,8 @@
     // ===== ESTAT GLOBAL =====
     var tipusActual = 'negre';
     var indexDetall = -1;
+    var tipusDetall = 'negre';   // per saber de quina vista ve el detall
+    var vistaPare = 'llista';    // 'llista' o 'tots'
     var puntuacioSeleccionada = 0;
     var modeEdicio = false;
 
@@ -857,11 +1017,18 @@
       return '★'.repeat(plenes) + (mitja ? '½' : '');
     }
 
-    // ===== CERCA =====
+    // ===== SUBTÍTOL DE CARD: anyada · D.O. =====
+    function subtitolVi(v) {
+      var parts = [];
+      if (v.collita) parts.push(v.collita);
+      if (v.do)      parts.push(v.do);
+      return parts.join(' · ');
+    }
+
+    // ===== CERCA (vista llista) =====
     function onCercaInput() {
       var val = document.getElementById('cerca-input').value;
-      var btn = document.getElementById('cerca-esborrar');
-      btn.classList.toggle('visible', val.length > 0);
+      document.getElementById('cerca-esborrar').classList.toggle('visible', val.length > 0);
       renderLlista();
     }
 
@@ -870,6 +1037,20 @@
       document.getElementById('cerca-esborrar').classList.remove('visible');
       renderLlista();
       document.getElementById('cerca-input').focus();
+    }
+
+    // ===== CERCA (vista tots) =====
+    function onTotsCercaInput() {
+      var val = document.getElementById('tots-cerca-input').value;
+      document.getElementById('tots-cerca-esborrar').classList.toggle('visible', val.length > 0);
+      renderTots();
+    }
+
+    function esborrarCercaTots() {
+      document.getElementById('tots-cerca-input').value = '';
+      document.getElementById('tots-cerca-esborrar').classList.remove('visible');
+      renderTots();
+      document.getElementById('tots-cerca-input').focus();
     }
 
     function ressaltar(text, cerca) {
@@ -891,6 +1072,7 @@
 
     function obrirLlista(tipus) {
       tipusActual = tipus;
+      vistaPare = 'llista';
       document.getElementById('llista-titol').textContent = EMOJIS[tipus] + ' ' + NOMS[tipus];
       document.getElementById('cerca-input').value = '';
       document.getElementById('cerca-esborrar').classList.remove('visible');
@@ -908,7 +1090,7 @@
       indexDetall = index;
 
       if (modeEdicio) {
-        var vins = getVins();
+        var vins = getVins(tipusActual);
         var v = vins[index];
         document.getElementById('form-titol').textContent = '✏️ Editar vi';
         document.getElementById('btn-guardar').textContent = 'Guardar canvis';
@@ -936,22 +1118,130 @@
     function obrirEdicio() { obrirForm(indexDetall); }
 
     function tornarLlista() {
-      renderLlista();
-      mostrarVista('view-llista');
+      if (vistaPare === 'tots') {
+        renderTots();
+        mostrarVista('view-tots');
+      } else {
+        renderLlista();
+        mostrarVista('view-llista');
+      }
+    }
+
+    // ===== VISTA TOTS ELS VINS =====
+    function obrirTots() {
+      vistaPare = 'tots';
+      document.getElementById('tots-cerca-input').value = '';
+      document.getElementById('tots-cerca-esborrar').classList.remove('visible');
+      renderTots();
+      mostrarVista('view-tots');
+    }
+
+    function renderTots() {
+      var cont = document.getElementById('tots-contingut');
+      var resumEl = document.getElementById('tots-cerca-resum');
+      var cerca = (document.getElementById('tots-cerca-input').value || '').trim().toLowerCase();
+      var ordre = document.getElementById('tots-ordre-select').value;
+
+      var totalResultats = 0;
+      var html = '';
+
+      TIPUS.forEach(function(t) {
+        var vinsTotal = getVins(t);
+
+        // Filtre de cerca
+        var items = [];
+        vinsTotal.forEach(function(v, i) {
+          if (!cerca) {
+            items.push({ vi: v, idx: i });
+          } else {
+            var coincideix = (v.nom     || '').toLowerCase().indexOf(cerca) >= 0
+                          || (v.do      || '').toLowerCase().indexOf(cerca) >= 0
+                          || (v.raim    || '').toLowerCase().indexOf(cerca) >= 0
+                          || (v.bodega  || '').toLowerCase().indexOf(cerca) >= 0;
+            if (coincideix) items.push({ vi: v, idx: i });
+          }
+        });
+
+        // Ordenació dins de cada tipus
+        if (ordre === 'nom') {
+          items.sort(function(a, b) {
+            return (a.vi.nom || '').localeCompare(b.vi.nom || '', 'ca', { sensitivity: 'base' });
+          });
+        } else if (ordre === 'collita') {
+          items.sort(function(a, b) { return (b.vi.collita || 0) - (a.vi.collita || 0); });
+        } else if (ordre === 'do') {
+          items.sort(function(a, b) {
+            return (a.vi.do || '').localeCompare(b.vi.do || '', 'ca', { sensitivity: 'base' });
+          });
+        } else if (ordre === 'puntuacio') {
+          items.sort(function(a, b) { return (b.vi.puntuacio || 0) - (a.vi.puntuacio || 0); });
+        }
+
+        if (items.length === 0) return; // no mostrem secció buida
+
+        totalResultats += items.length;
+
+        // Capçalera de secció
+        html += '<div class="seccio-tipus">'
+          + '<span class="seccio-emoji">' + EMOJIS[t] + '</span>'
+          + '<span class="seccio-nom">' + NOMS[t] + '</span>'
+          + '<span class="seccio-count">' + items.length + (items.length === 1 ? ' vi' : ' vins') + '</span>'
+          + '</div>';
+
+        // Tarjetes de la secció
+        html += '<div class="seccio-vins">';
+        items.forEach(function(item) {
+          var v   = item.vi;
+          var idx = item.idx;
+          var punts = formatPuntuacioCurt(v.puntuacio);
+          var sub   = subtitolVi(v);
+
+          var nomHTML = cerca ? ressaltar(v.nom, cerca) : escHTML(v.nom);
+          var subHTML = cerca ? ressaltar(sub, cerca) : escHTML(sub);
+
+          html += '<div class="vi-card" onclick="obrirDetallTots(\'' + t + '\',' + idx + ')">'
+            + '<span class="vi-emoji">' + EMOJIS[t] + '</span>'
+            + '<div class="vi-info">'
+            + '<div class="vi-nom">' + nomHTML + '</div>'
+            + (sub ? '<div class="vi-sub">' + subHTML + '</div>' : '')
+            + '</div>'
+            + '<span class="vi-punts">' + punts + '</span>'
+            + '</div>';
+        });
+        html += '</div>';
+      });
+
+      // Resum de cerca
+      if (cerca) {
+        resumEl.textContent = totalResultats + ' resultat' + (totalResultats !== 1 ? 's' : '') + ' per "' + cerca + '"';
+        resumEl.classList.add('visible');
+      } else {
+        resumEl.classList.remove('visible');
+      }
+
+      if (totalResultats === 0) {
+        cont.innerHTML = '<div class="buit-missatge">'
+          + (cerca
+            ? '<span class="buit-emoji">🔍</span>Cap vi coincideix amb <strong>"' + escHTML(cerca) + '"</strong>.'
+            : '<span class="buit-emoji">🍷</span>Encara no hi ha cap vi.<br>Afegeix-ne des de cada tipus.')
+          + '</div>';
+      } else {
+        cont.innerHTML = html;
+      }
     }
 
     // ===== DADES =====
-    function getVins() {
-      return JSON.parse(localStorage.getItem('vins_' + tipusActual) || '[]');
+    function getVins(tipus) {
+      return JSON.parse(localStorage.getItem('vins_' + (tipus || tipusActual)) || '[]');
     }
 
-    function setVins(arr) {
-      localStorage.setItem('vins_' + tipusActual, JSON.stringify(arr));
+    function setVins(arr, tipus) {
+      localStorage.setItem('vins_' + (tipus || tipusActual), JSON.stringify(arr));
     }
 
-    // ===== LLISTA (amb cerca i ordre) =====
+    // ===== LLISTA (vista per tipus, amb cerca i ordre) =====
     function renderLlista() {
-      var vinsTotal = getVins();
+      var vinsTotal = getVins(tipusActual);
       var cont = document.getElementById('llista-contingut');
       var resumEl = document.getElementById('cerca-resum');
 
@@ -963,9 +1253,9 @@
           items.push({ vi: v, idx: i });
         } else {
           var coincideix = (v.nom     || '').toLowerCase().indexOf(cerca) >= 0
+                        || (v.do      || '').toLowerCase().indexOf(cerca) >= 0
                         || (v.bodega  || '').toLowerCase().indexOf(cerca) >= 0
-                        || (v.raim    || '').toLowerCase().indexOf(cerca) >= 0
-                        || (v.do      || '').toLowerCase().indexOf(cerca) >= 0;
+                        || (v.raim    || '').toLowerCase().indexOf(cerca) >= 0;
           if (coincideix) items.push({ vi: v, idx: i });
         }
       });
@@ -979,6 +1269,10 @@
         });
       } else if (ordre === 'collita') {
         items.sort(function(a, b) { return (b.vi.collita || 0) - (a.vi.collita || 0); });
+      } else if (ordre === 'do') {
+        items.sort(function(a, b) {
+          return (a.vi.do || '').localeCompare(b.vi.do || '', 'ca', { sensitivity: 'base' });
+        });
       }
 
       if (cerca) {
@@ -1007,7 +1301,7 @@
         var v   = item.vi;
         var idx = item.idx;
         var punts = formatPuntuacioCurt(v.puntuacio);
-        var sub = [v.bodega, v.do, v.collita ? 'Anyada ' + v.collita : ''].filter(Boolean).join(' · ');
+        var sub = subtitolVi(v);   // anyada · D.O.
 
         var nomHTML = cerca ? ressaltar(v.nom, cerca) : escHTML(v.nom);
         var subHTML = cerca ? ressaltar(sub, cerca) : escHTML(sub);
@@ -1025,7 +1319,20 @@
 
     // ===== DETALL / MODAL =====
     function obrirDetall(index) {
-      var vins = getVins();
+      tipusDetall = tipusActual;
+      vistaPare = 'llista';
+      _obrirDetallVi(tipusActual, index);
+    }
+
+    function obrirDetallTots(tipus, index) {
+      tipusActual = tipus;
+      tipusDetall = tipus;
+      vistaPare = 'tots';
+      _obrirDetallVi(tipus, index);
+    }
+
+    function _obrirDetallVi(tipus, index) {
+      var vins = getVins(tipus);
       var v = vins[index];
       indexDetall = index;
 
@@ -1033,7 +1340,7 @@
       document.getElementById('m-puntuacio').textContent = formatPuntuacio(v.puntuacio);
 
       var files = [
-        ['Tipus',     NOMS[tipusActual]],
+        ['Tipus',     NOMS[tipus]],
         ['Raïm',      v.raim],
         ['Anyada',    v.collita],
         ['Graduació', v.graduacio ? v.graduacio + '%' : ''],
@@ -1065,11 +1372,15 @@
 
     function eliminarVi() {
       if (!confirm('Segur que vols eliminar aquest vi?')) return;
-      var vins = getVins();
+      var vins = getVins(tipusActual);
       vins.splice(indexDetall, 1);
-      setVins(vins);
+      setVins(vins, tipusActual);
       document.getElementById('modal-overlay').classList.remove('obert');
-      renderLlista();
+      if (vistaPare === 'tots') {
+        renderTots();
+      } else {
+        renderLlista();
+      }
     }
 
     // ===== FORMULARI =====
@@ -1081,7 +1392,7 @@
         return;
       }
 
-      var vins = getVins();
+      var vins = getVins(tipusActual);
 
       var viData = {
         nom:          nom,
@@ -1102,17 +1413,21 @@
         vins.unshift(viData);
       }
 
-      setVins(vins);
+      setVins(vins, tipusActual);
       tornarLlista();
     }
 
     // ===== COMPTADORS INICI =====
     function actualitzarComptadors() {
+      var total = 0;
       TIPUS.forEach(function(t) {
         var vins = JSON.parse(localStorage.getItem('vins_' + t) || '[]');
         var el = document.getElementById('comp-' + t);
         if (el) el.textContent = vins.length === 1 ? '1 vi' : vins.length + ' vins';
+        total += vins.length;
       });
+      var elTots = document.getElementById('comp-tots');
+      if (elTots) elTots.textContent = total === 1 ? '1 vi' : total + ' vins';
     }
 
     // ===== MODAL CÒPIA DE SEGURETAT =====
@@ -1174,7 +1489,6 @@
     // ===== IMPORTACIÓ =====
     function importarJSON(event) {
       var fitxer = event.target.files[0];
-      // Reiniciem l'input per poder tornar a seleccionar el mateix fitxer si cal
       event.target.value = '';
 
       if (!fitxer) return;
@@ -1184,12 +1498,10 @@
         try {
           var dades = JSON.parse(e.target.result);
 
-          // Validació bàsica de l'estructura
           if (!dades.vins || typeof dades.vins !== 'object') {
             throw new Error('Fitxer no vàlid');
           }
 
-          // Comptem quants vins vindran
           var totalNou = 0;
           TIPUS.forEach(function(t) {
             if (Array.isArray(dades.vins[t])) totalNou += dades.vins[t].length;
@@ -1198,7 +1510,6 @@
           var msg = 'Importar ' + totalNou + ' vins?\n\nAIXÒ SUBSTITUIRÀ totes les dades actuals.\nContinua?';
           if (!confirm(msg)) return;
 
-          // Guardem les dades
           TIPUS.forEach(function(t) {
             if (Array.isArray(dades.vins[t])) {
               localStorage.setItem('vins_' + t, JSON.stringify(dades.vins[t]));
