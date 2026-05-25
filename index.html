@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Pas_05: Cerca i filtres -->
+<!-- Pas_06: Exportació / còpia de seguretat -->
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
@@ -19,7 +19,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Fons general de pàgina (visible a l'ordinador) */
     html {
       background: #0d0508;
       min-height: 100%;
@@ -32,7 +31,6 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      /* Vista centrada tipus mòbil a l'ordinador */
       max-width: 430px;
       margin: 0 auto;
       box-shadow: 0 0 40px rgba(0,0,0,0.8);
@@ -73,6 +71,23 @@
       cursor: pointer;
     }
     .btn-back:active { opacity: 0.6; }
+
+    /* Botó de còpia de seguretat a l'inici */
+    .btn-copia {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #f0e6ea;
+      font-size: 1.2rem;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .btn-copia:active { opacity: 0.6; }
 
     /* ===== VISTES ===== */
     .vista {
@@ -231,7 +246,6 @@
     }
     #ordre-select:focus { border-color: #c0406a; }
 
-    /* Comptador de resultats */
     .cerca-resum {
       padding: 6px 16px;
       font-size: 0.75rem;
@@ -269,7 +283,6 @@
     .vi-card .vi-sub { font-size: 0.8rem; color: #9a7080; margin-top: 2px; }
     .vi-card .vi-punts { font-size: 0.85rem; flex-shrink: 0; letter-spacing: -1px; }
 
-    /* Paraula cercada ressaltada */
     .highlight {
       background: rgba(192,64,106,0.3);
       border-radius: 3px;
@@ -339,7 +352,7 @@
 
     .camp textarea { resize: none; height: 80px; }
 
-    /* ===== ESTRELLES (medies estrelles) ===== */
+    /* ===== ESTRELLES ===== */
     .estreles {
       display: flex;
       gap: 4px;
@@ -498,6 +511,119 @@
     }
     .btn-eliminar:active { background: #5a1020; }
 
+    /* ===== MODAL CÒPIA DE SEGURETAT ===== */
+    #modal-copia .modal-sheet {
+      padding-bottom: 40px;
+    }
+
+    .copia-titol {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .copia-subtitol {
+      font-size: 0.82rem;
+      color: #9a7080;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+
+    .copia-boto {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      text-align: left;
+      margin-bottom: 12px;
+      transition: opacity 0.15s;
+    }
+    .copia-boto:active { opacity: 0.75; }
+
+    .copia-boto .copia-icona {
+      font-size: 1.8rem;
+      flex-shrink: 0;
+      width: 44px;
+      text-align: center;
+    }
+
+    .copia-boto .copia-text .copia-nom {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f0e6ea;
+    }
+
+    .copia-boto .copia-text .copia-desc {
+      font-size: 0.78rem;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .copia-boto-exportar {
+      background: linear-gradient(135deg, #1a3a1a, #2a5a2a);
+      border: 1px solid #3a7a3a;
+    }
+    .copia-boto-exportar .copia-text .copia-desc { color: #80c880; }
+
+    .copia-boto-importar {
+      background: linear-gradient(135deg, #1a2a3a, #2a4a6a);
+      border: 1px solid #3a6a9a;
+    }
+    .copia-boto-importar .copia-text .copia-desc { color: #80b0e0; }
+
+    .copia-resum {
+      margin-top: 16px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      font-size: 0.82rem;
+      color: #9a7080;
+      line-height: 1.6;
+    }
+
+    .copia-resum strong { color: #c9909f; }
+
+    /* ===== TOAST ===== */
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #2a4a2a;
+      border: 1px solid #4a8a4a;
+      color: #a0e0a0;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+      max-width: calc(100% - 40px);
+      text-align: center;
+    }
+
+    #toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #toast.error {
+      background: #4a1a1a;
+      border-color: #8a3a3a;
+      color: #f0a0a0;
+    }
+
+    /* Input file ocult */
+    #input-fitxer { display: none; }
+
     footer {
       text-align: center;
       padding: 12px;
@@ -513,6 +639,7 @@
     <header>
       <h1>🍷 Celler de Vins</h1>
       <p>El meu registre personal</p>
+      <button class="btn-copia" onclick="obrirCopia()" title="Còpia de seguretat">💾</button>
     </header>
     <main>
       <p class="titol-seccio">Selecciona el tipus de vi</p>
@@ -550,7 +677,6 @@
       <button class="btn-afegir" onclick="obrirForm(-1)">+</button>
     </div>
 
-    <!-- Barra de cerca i ordre -->
     <div class="cerca-barra">
       <div class="cerca-input-wrap">
         <span class="cerca-icona">🔍</span>
@@ -604,9 +730,7 @@
       </div>
       <div class="camp">
         <label>Puntuació</label>
-        <div class="estreles" id="estreles">
-          <!-- Les 5 posicions d'estrella es generen via JS -->
-        </div>
+        <div class="estreles" id="estreles"></div>
       </div>
       <div class="camp">
         <label>Observacions / Notes de cata</label>
@@ -631,6 +755,42 @@
     </div>
   </div>
 
+  <!-- ========== MODAL CÒPIA DE SEGURETAT ========== -->
+  <div id="modal-copia" class="modal-overlay" onclick="tancarModalCopia(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="copia-titol">💾 Còpia de seguretat</div>
+      <div class="copia-subtitol">
+        Exporta els teus vins a un fitxer JSON per guardar-los a l'ordinador,<br>
+        o importa una còpia anterior per restaurar les dades.
+      </div>
+
+      <button class="copia-boto copia-boto-exportar" onclick="exportarJSON()">
+        <span class="copia-icona">⬇️</span>
+        <div class="copia-text">
+          <div class="copia-nom">Exportar còpia</div>
+          <div class="copia-desc">Descarrega tots els vins en un fitxer .json</div>
+        </div>
+      </button>
+
+      <button class="copia-boto copia-boto-importar" onclick="document.getElementById('input-fitxer').click()">
+        <span class="copia-icona">⬆️</span>
+        <div class="copia-text">
+          <div class="copia-nom">Importar còpia</div>
+          <div class="copia-desc">Restaura vins des d'un fitxer .json exportat anteriorment</div>
+        </div>
+      </button>
+
+      <div class="copia-resum" id="copia-resum"></div>
+    </div>
+  </div>
+
+  <!-- Input ocult per seleccionar fitxer -->
+  <input type="file" id="input-fitxer" accept=".json" onchange="importarJSON(event)">
+
+  <!-- Toast de confirmació -->
+  <div id="toast"></div>
+
   <script>
     // ===== ESTAT GLOBAL =====
     var tipusActual = 'negre';
@@ -640,6 +800,7 @@
 
     var EMOJIS = { negre: '🍷', blanc: '🥂', rosat: '🌸', cava: '🍾' };
     var NOMS   = { negre: 'Vi Negre', blanc: 'Vi Blanc', rosat: 'Vi Rosat', cava: 'Cava' };
+    var TIPUS  = ['negre', 'blanc', 'rosat', 'cava'];
 
     // ===== ESTRELLES =====
     function crearEstreles() {
@@ -700,11 +861,7 @@
     function onCercaInput() {
       var val = document.getElementById('cerca-input').value;
       var btn = document.getElementById('cerca-esborrar');
-      if (val.length > 0) {
-        btn.classList.add('visible');
-      } else {
-        btn.classList.remove('visible');
-      }
+      btn.classList.toggle('visible', val.length > 0);
       renderLlista();
     }
 
@@ -715,7 +872,6 @@
       document.getElementById('cerca-input').focus();
     }
 
-    // Ressalta el text cercat dins d'una cadena (retorna HTML segur)
     function ressaltar(text, cerca) {
       if (!cerca || !text) return escHTML(text || '');
       var re = new RegExp('(' + cerca.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
@@ -736,7 +892,6 @@
     function obrirLlista(tipus) {
       tipusActual = tipus;
       document.getElementById('llista-titol').textContent = EMOJIS[tipus] + ' ' + NOMS[tipus];
-      // Netejem la cerca quan canviem de categoria
       document.getElementById('cerca-input').value = '';
       document.getElementById('cerca-esborrar').classList.remove('visible');
       renderLlista();
@@ -800,10 +955,8 @@
       var cont = document.getElementById('llista-contingut');
       var resumEl = document.getElementById('cerca-resum');
 
-      // --- Filtre de cerca ---
       var cerca = (document.getElementById('cerca-input').value || '').trim().toLowerCase();
 
-      // Mantenim l'índex original per poder editar/esborrar correctament
       var items = [];
       vinsTotal.forEach(function(v, i) {
         if (!cerca) {
@@ -817,7 +970,6 @@
         }
       });
 
-      // --- Ordenació ---
       var ordre = document.getElementById('ordre-select').value;
       if (ordre === 'puntuacio') {
         items.sort(function(a, b) { return (b.vi.puntuacio || 0) - (a.vi.puntuacio || 0); });
@@ -828,9 +980,7 @@
       } else if (ordre === 'collita') {
         items.sort(function(a, b) { return (b.vi.collita || 0) - (a.vi.collita || 0); });
       }
-      // 'defecte' → ordre d'entrada (ja ve de localStorage)
 
-      // --- Resum de cerca ---
       if (cerca) {
         resumEl.textContent = items.length + ' resultat' + (items.length !== 1 ? 's' : '') + ' per "' + cerca + '"';
         resumEl.classList.add('visible');
@@ -838,7 +988,6 @@
         resumEl.classList.remove('visible');
       }
 
-      // --- Llista buida ---
       if (items.length === 0) {
         if (cerca) {
           cont.innerHTML = '<div class="buit-missatge">'
@@ -854,14 +1003,12 @@
         return;
       }
 
-      // --- Renderitzem les targetes ---
       cont.innerHTML = items.map(function(item) {
         var v   = item.vi;
         var idx = item.idx;
         var punts = formatPuntuacioCurt(v.puntuacio);
         var sub = [v.bodega, v.do, v.collita ? 'Anyada ' + v.collita : ''].filter(Boolean).join(' · ');
 
-        // Ressaltem la paraula cercada al nom i al subtítol
         var nomHTML = cerca ? ressaltar(v.nom, cerca) : escHTML(v.nom);
         var subHTML = cerca ? ressaltar(sub, cerca) : escHTML(sub);
 
@@ -961,11 +1108,128 @@
 
     // ===== COMPTADORS INICI =====
     function actualitzarComptadors() {
-      ['negre', 'blanc', 'rosat', 'cava'].forEach(function(t) {
+      TIPUS.forEach(function(t) {
         var vins = JSON.parse(localStorage.getItem('vins_' + t) || '[]');
         var el = document.getElementById('comp-' + t);
         if (el) el.textContent = vins.length === 1 ? '1 vi' : vins.length + ' vins';
       });
+    }
+
+    // ===== MODAL CÒPIA DE SEGURETAT =====
+    function obrirCopia() {
+      actualitzarResumCopia();
+      document.getElementById('modal-copia').classList.add('obert');
+    }
+
+    function tancarModalCopia(event) {
+      if (event.target === document.getElementById('modal-copia')) {
+        document.getElementById('modal-copia').classList.remove('obert');
+      }
+    }
+
+    function actualitzarResumCopia() {
+      var total = 0;
+      var linies = TIPUS.map(function(t) {
+        var n = JSON.parse(localStorage.getItem('vins_' + t) || '[]').length;
+        total += n;
+        return EMOJIS[t] + ' ' + NOMS[t] + ': <strong>' + n + '</strong>';
+      });
+      var el = document.getElementById('copia-resum');
+      el.innerHTML = linies.join(' &nbsp;·&nbsp; ')
+        + '<br><br>Total: <strong>' + total + ' vins guardats</strong>';
+    }
+
+    // ===== EXPORTACIÓ =====
+    function exportarJSON() {
+      var dades = { versio: 1, data: new Date().toISOString().slice(0, 10), vins: {} };
+      var total = 0;
+      TIPUS.forEach(function(t) {
+        var arr = JSON.parse(localStorage.getItem('vins_' + t) || '[]');
+        dades.vins[t] = arr;
+        total += arr.length;
+      });
+
+      if (total === 0) {
+        mostrarToast('⚠️ No hi ha vins per exportar', true);
+        return;
+      }
+
+      var json = JSON.stringify(dades, null, 2);
+      var blob = new Blob([json], { type: 'application/json' });
+      var url  = URL.createObjectURL(blob);
+      var nom  = 'celler_vins_' + dades.data + '.json';
+
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = nom;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      mostrarToast('✅ ' + total + ' vins exportats correctament');
+      document.getElementById('modal-copia').classList.remove('obert');
+    }
+
+    // ===== IMPORTACIÓ =====
+    function importarJSON(event) {
+      var fitxer = event.target.files[0];
+      // Reiniciem l'input per poder tornar a seleccionar el mateix fitxer si cal
+      event.target.value = '';
+
+      if (!fitxer) return;
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          var dades = JSON.parse(e.target.result);
+
+          // Validació bàsica de l'estructura
+          if (!dades.vins || typeof dades.vins !== 'object') {
+            throw new Error('Fitxer no vàlid');
+          }
+
+          // Comptem quants vins vindran
+          var totalNou = 0;
+          TIPUS.forEach(function(t) {
+            if (Array.isArray(dades.vins[t])) totalNou += dades.vins[t].length;
+          });
+
+          var msg = 'Importar ' + totalNou + ' vins?\n\nAIXÒ SUBSTITUIRÀ totes les dades actuals.\nContinua?';
+          if (!confirm(msg)) return;
+
+          // Guardem les dades
+          TIPUS.forEach(function(t) {
+            if (Array.isArray(dades.vins[t])) {
+              localStorage.setItem('vins_' + t, JSON.stringify(dades.vins[t]));
+            } else {
+              localStorage.setItem('vins_' + t, '[]');
+            }
+          });
+
+          actualitzarComptadors();
+          actualitzarResumCopia();
+          mostrarToast('✅ ' + totalNou + ' vins importats correctament');
+          document.getElementById('modal-copia').classList.remove('obert');
+
+        } catch (err) {
+          mostrarToast('❌ El fitxer no és vàlid', true);
+        }
+      };
+      reader.readAsText(fitxer);
+    }
+
+    // ===== TOAST =====
+    var toastTimer = null;
+    function mostrarToast(msg, error) {
+      var el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.toggle('error', !!error);
+      el.classList.add('visible');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function() {
+        el.classList.remove('visible');
+      }, 3000);
     }
 
     // ===== SERVICE WORKER =====
