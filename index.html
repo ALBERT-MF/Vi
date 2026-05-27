@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Pas_08: Foto de l'etiqueta + Compartir fitxa v01-->
+<!-- Pas_08: Foto de l'etiqueta + Compartir fitxa v02-->
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
@@ -830,18 +830,6 @@
       el.textContent = msg; el.classList.toggle('error', !!error); el.classList.add('visible');
       if (toastTimer) clearTimeout(toastTimer);
       toastTimer = setTimeout(function(){ el.classList.remove('visible'); }, 3000);
-    }
-
-    // ===== INIT =====
-    function init() {
-      crearEstreles();
-      actualitzarComptadors();
-    }
-    window.addEventListener('load', init);
-  </script>
-</body>
-</html>
-3000);
     }
 
     // ===== INIT =====
