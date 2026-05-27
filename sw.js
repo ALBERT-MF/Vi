@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vins-v5';
+const CACHE_NAME = 'vins-v6';
 const FITXERS = [
   './',
   './index.html',
